@@ -1,0 +1,19 @@
+<!Doctype HTML>
+<html ng-csp>
+	<head>
+		<title>Localist</title>
+		<script type='text/javascript' src='/js/angular.min.js'></script>
+		<script type='text/javascript' src='/js/angular-route.min.js'></script>
+		<script type='text/javascript' src='/js/angular-sanitize.min.js'></script>
+		<script type='text/javascript' src='/js/lawnchair.min.js'></script>
+		<script type='text/javascript' src='/js/marked.js'></script>
+		<script type='text/javascript' src='/js/lawnchair-adapter-indexed-db.js'></script>
+		<link rel='stylesheet' type='text/css' href='/css/angular-csp.css' />
+		<script type='text/javascript' src='/js/app.js'></script>
+	</head>
+	<body ng-app='Localist'>
+		<h1>Edit The Thing</h1>
+		<textarea ng-model='markdown'></textarea>
+		<div ng-bind-html="(markdown||'')|marked"></div>
+	</body>
+</html>
