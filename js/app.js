@@ -15,6 +15,7 @@ module.factory("Storage",(function($q){
 				var promise = $q.defer();
 				lawn.exists("currentPost",(function(exists){
 					if(exists){
+						console.log(exists);
 						lawn.get("currentPost",(function(post){
 							promise.resolve(post);
 						}));
@@ -23,10 +24,12 @@ module.factory("Storage",(function($q){
 				return promise.promise;
 			});
 			that.setCurrentPost = (function(postdata) {
+				var promise = $q.defer();
 				lawn.save({
 					key:"currentPost",
 					postID:postdata.key
-				});
+				},promise.resolve);
+				return promise.promise;
 			});
 			that.loadPost = (function(postID){
 				var promise = $q.defer();
@@ -77,7 +80,7 @@ module.controller('Editor',(function($scope,Storage){
 		$scope.readyState = 1;
 		Storage.prepare().then(function(mechanism){
 			mechanism.deletePost($scope.post).then((function(){
-				$scope.reload();
+				mechanism.setCurrentPost({key:null}).then($scope.reload);
 			}));
 		});
 	});
@@ -91,13 +94,12 @@ module.controller('Editor',(function($scope,Storage){
 	$scope.reload = (function(){
 		Storage.prepare().then(function(mechanism){
 			mechanism.loadCurrentPost().then(function(currentPost){
-				if(currentPost===null) {
+				if(currentPost===null||currentPost.postID===null) {
+					$scope.post = {markDown:"",name:null};
 					$scope.readyState = 2;
-					$scope.apply();
 				} else mechanism.loadPost(currentPost.postID).then((function (post) {
 					$scope.post = post;
 					$scope.readyState = 2;
-					$scope.apply();
 				}));
 			});
 		});
