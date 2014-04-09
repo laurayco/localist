@@ -3,6 +3,9 @@
 	<head>
 		<title>Localist</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script src="/js/jquery.min.js"></script>
+		<script src="/js/jquery.widget.min.js"></script>
+		<script src="/js/metro/metro.min.js"></script>
 		<script type='text/javascript' src='/js/sugar.min.js'></script>
 		<script type='text/javascript' src='/js/marked.js'></script>
 		<script type='text/javascript' src='/js/angular.min.js'></script>
@@ -23,42 +26,7 @@
 			</div>
 		</nav>
 		<div class="container">
-			<div class='row' ng-controller='Editor'>
-				<div class='col-md-6'>
-					<h1>Editor</h1>
-					<form ng-show="readyState>=1">
-						<div class="form-group">
-							<label for="postName">Post Name</label>
-							<input type="text" class="form-control input-lg" id="postName" placeholder="name:" ng-model='post.name'>
-						</div>
-						<div class="form-group">
-							<label for='postContent'>Markdown</label>
-							<textarea ng-model='post.markDown' class='form-control' id='postContent'>
-							</textarea>
-						</div>
-						<div class="form-group">
-							<div class="btn-group">
-								<button type="button" class="btn btn-sm btn-primary" ng-click='savePost()'>
-									<span class="glyphicon glyphicon-save"></span> Save
-								</button>
-								<button type="button" class="btn btn-sm btn-info">
-									<span class="glyphicon glyphicon-cloud-upload"></span> Publish
-								</button>
-								<button type="button" class="btn btn-sm btn-warning">
-									<span class="glyphicon glyphicon-remove"></span> Discard
-								</button>
-								<button type="button" class="btn btn-sm btn-danger">
-									<span class="glyphicon glyphicon-remove-sign"></span> Delete
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class='col-md-6'>
-					<h1>post: {{post.name}}</h1>
-					<div ng-bind-html="post.markDown|marked"></div>
-				</div>
-			</div>
+			<div ng-include="'/html/editor.html'"></div>
 		</div>
 	</body>
 </html>
