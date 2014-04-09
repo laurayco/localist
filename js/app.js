@@ -50,6 +50,11 @@ module.factory("Storage",(function($q){
 				postData.created=Date.now();
 				return that.savePost(postData);
 			});
+			that.deletePost = (function(postData){
+				var promise = $q.defer();
+				lawn.remove(postData.key,promise.resolve);
+				return promise.promise;
+			});
 			return that;
 		}),
 		prepare:(function(){
@@ -68,35 +73,34 @@ module.factory("Storage",(function($q){
 module.controller('Editor',(function($scope,Storage){
 	$scope.readyState = 0;
 	$scope.post = {markDown:"",name:null};
-	$scope.savePost = (function(){
-		console.log("HAHHH???");
+	$scope.deletePost = (function(){
+		$scope.readyState = 1;
 		Storage.prepare().then(function(mechanism){
-			console.log("Saving...");
-			if($scope.post.postID){
-				// update an existing post.
-				mechanism.savePost($scope.post).then(function(post){
-					console.log("Updated:",post);
-					mechanism.setCurrentPost(post);
-				});
-			} else {
-				// create a new post.
-				mechanism.createPost($scope.post).then(function(post){
-					console.log("Created:",post);
-					mechanism.setCurrentPost(post);
-				});
-			}
+			mechanism.deletePost($scope.post).then((function(){
+				$scope.reload();
+			}));
 		});
 	});
-	Storage.prepare().then(function(mechanism){
-		mechanism.loadCurrentPost().then(function(currentPost){
-			if(currentPost===null) {
-				$scope.readyState = 1;
-			} else {
-				mechanism.loadPost(currentPost.postID).then((function (post) {
+	$scope.savePost = (function(){
+		Storage.prepare().then(function(mechanism){
+			var promise = $scope.post.key?mechanism.savePost:mechanism.createPost;
+			promise = promise($scope.post);
+			promise.then(mechanism.setCurrentPost);
+		});
+	});
+	$scope.reload = (function(){
+		Storage.prepare().then(function(mechanism){
+			mechanism.loadCurrentPost().then(function(currentPost){
+				if(currentPost===null) {
+					$scope.readyState = 2;
+					$scope.apply();
+				} else mechanism.loadPost(currentPost.postID).then((function (post) {
 					$scope.post = post;
-					$scope.readyState = 1;
+					$scope.readyState = 2;
+					$scope.apply();
 				}));
-			}
+			});
 		});
 	});
+	$scope.reload();
 }));

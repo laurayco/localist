@@ -1,8 +1,8 @@
 
 <div class='row' ng-controller='Editor'>
 	<div class='col-md-6'>
-		<h1>Editor</h1>
-		<form ng-show="readyState>=1">
+		<h1>Editor {{readyState}} {{readyState>=2}}</h1>
+		<form ng-show="readyState>=2">
 			<div class="form-group">
 				<label for="postName">Post Name</label>
 				<input type="text" class="form-control input-lg" id="postName" placeholder="name:" ng-model='post.name'>
@@ -23,7 +23,7 @@
 					<button type="button" class="btn btn-sm btn-warning">
 						<span class="glyphicon glyphicon-remove"></span> Discard
 					</button>
-					<button type="button" class="btn btn-sm btn-danger">
+					<button type="button" class="btn btn-sm btn-danger" ng-click='deletePost()'>
 						<span class="glyphicon glyphicon-remove-sign"></span> Delete
 					</button>
 				</div>
