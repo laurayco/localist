@@ -23,13 +23,14 @@ module.factory("Storage",(function($q){
 				return promise.promise;
 			});
 			that.setCurrentPost = (function(postdata) {
-				lawn.save("currentPost",({
-					postID:postdata.postID
-				}));
+				lawn.save({
+					key:"currentPost",
+					postID:postdata.key
+				});
 			});
 			that.loadPost = (function(postID){
 				var promise = $q.defer();
-				lawn.get("post-"+postID,(function(data){
+				lawn.get(postID,(function(data){
 					if(data)
 						promise.resolve(data);
 					else
@@ -38,17 +39,17 @@ module.factory("Storage",(function($q){
 				return promise.promise;
 			});
 			that.savePost = (function(postData){
-				var promise = $q.promise();
+				var promise = $q.defer();
 				postData.modified=Date.now();
-				lawn.save("post-"+postID,postData,(function(){
+				lawn.save(postData,(function(){
 					promise.resolve(postData);
 				}));
 				return promise.promise;
 			});
 			that.createPost = (function(postData){
-				postData.postID = int(Math.floor(postData.created=Date.now()));
+				postData.created=Date.now();
 				return that.savePost(postData);
-			})
+			});
 			return that;
 		}),
 		prepare:(function(){
@@ -66,7 +67,7 @@ module.factory("Storage",(function($q){
 
 module.controller('Editor',(function($scope,Storage){
 	$scope.readyState = 0;
-	$scope.post = {postID:null,markDown:"",name:null};
+	$scope.post = {markDown:"",name:null};
 	$scope.savePost = (function(){
 		console.log("HAHHH???");
 		Storage.prepare().then(function(mechanism){
@@ -79,7 +80,7 @@ module.controller('Editor',(function($scope,Storage){
 				});
 			} else {
 				// create a new post.
-				mechanism.create($scope.post).then(function(post){
+				mechanism.createPost($scope.post).then(function(post){
 					console.log("Created:",post);
 					mechanism.setCurrentPost(post);
 				});
