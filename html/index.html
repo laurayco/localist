@@ -1,14 +1,15 @@
-<!Doctype HTML>
+<!DOCTYPE HTML>
 <html ng-csp>
 	<head>
 		<title>Localist</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script type='text/javascript' src='/js/sugar.min.js'></script>
+		<script type='text/javascript' src='/js/marked.js'></script>
 		<script type='text/javascript' src='/js/angular.min.js'></script>
 		<script type='text/javascript' src='/js/angular-route.min.js'></script>
 		<script type='text/javascript' src='/js/angular-sanitize.min.js'></script>
 		<script type='text/javascript' src='/js/lawnchair.min.js'></script>
-		<script type='text/javascript' src='/js/marked.js'></script>
-		<script type='text/javascript' src='/js/lawnchair-adapter-indexed-db.js'></script>
+		<!--<script type='text/javascript' src='/js/lawnchair-adapter-indexed-db.js'></script>-->
 		<link rel='stylesheet' type='text/css' href='/css/angular-csp.css' />
 		<link rel='stylesheet' type='text/css' href='/css/bootstrap.min.css' />
 		<script type='text/javascript' src='/js/app.js'></script>
@@ -25,16 +26,17 @@
 			<div class='row' ng-controller='Editor'>
 				<div class='col-md-6'>
 					<h1>Editor</h1>
-					<form ng-show='readyState>1'>
+					<form ng-show="readyState>=1">
 						<div class="form-group">
 							<label for="postName">Post Name</label>
-							<input type="text" class="form-control input-lg" id="postName" placeholder="name:" ng-model='postName'>
+							<input type="text" class="form-control input-lg" id="postName" placeholder="name:" ng-model='post.name'>
 						</div>
+						<div class="form-group">
 							<label for='postContent'>Markdown</label>
-							<label for='postContent'>Markdown</label>
-							<textarea ng-model='markdown' class='form-control' id='postContent'></textarea>
+							<textarea ng-model='post.markDown' class='form-control' id='postContent'>
+							</textarea>
 						</div>
-							<div class="btn-group">
+						<div class="form-group">
 							<div class="btn-group">
 								<button type="button" class="btn btn-sm btn-primary" ng-click='savePost'>
 									<span class="glyphicon glyphicon-save"></span> Save
@@ -53,8 +55,8 @@
 					</form>
 				</div>
 				<div class='col-md-6'>
-					<h1>{{postName}}</h1>
-					<div ng-bind-html="(markdown||'')|marked"></div>
+					<h1>post: {{post.name}}</h1>
+					<div ng-bind-html="post.markDown|marked"></div>
 				</div>
 			</div>
 		</div>
