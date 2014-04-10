@@ -75,7 +75,7 @@ module.factory("Storage",(function($q){
 
 module.controller('Editor',(function($scope,Storage){
 	$scope.readyState = 0;
-	$scope.post = {markDown:"",name:null};
+	$scope.post = {markDown:"",name:null,tags:""};
 	$scope.deletePost = (function(){
 		$scope.readyState = 1;
 		Storage.prepare().then(function(mechanism){
@@ -95,7 +95,7 @@ module.controller('Editor',(function($scope,Storage){
 		Storage.prepare().then(function(mechanism){
 			mechanism.loadCurrentPost().then(function(currentPost){
 				if(currentPost===null||currentPost.postID===null) {
-					$scope.post = {markDown:"",name:null};
+					$scope.post = {markDown:"",name:null,tags:""};
 					$scope.readyState = 2;
 				} else mechanism.loadPost(currentPost.postID).then((function (post) {
 					$scope.post = post;

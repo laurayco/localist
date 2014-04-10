@@ -12,6 +12,10 @@
 				<textarea ng-model='post.markDown' class='form-control' id='postContent'>
 				</textarea>
 			</div>
+			<div class='form-group'>
+				<label for='postTags'>Tags:</label>
+				<input type='text' class='form-control input-sm' id='postTags' placeholder="tags: [ seperated by spaces ]" ng-model='post.tags' />
+			</div>
 			<div class="form-group">
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary" ng-click='savePost()'>
@@ -20,7 +24,7 @@
 					<button type="button" class="btn btn-sm btn-info">
 						<span class="glyphicon glyphicon-cloud-upload"></span> Publish
 					</button>
-					<button type="button" class="btn btn-sm btn-warning">
+					<button type="button" class="btn btn-sm btn-warning" ng-click='reload()'>
 						<span class="glyphicon glyphicon-remove"></span> Discard
 					</button>
 					<button type="button" class="btn btn-sm btn-danger" ng-click='deletePost()'>
@@ -31,7 +35,21 @@
 		</form>
 	</div>
 	<div class='col-md-6'>
-		<h1>post: {{post.name}}</h1>
-		<div ng-bind-html="post.markDown|marked"></div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h1 class='panel-title'>post: {{post.name}}</h1>
+			</div>
+			<div class='panel-body'>
+				<div ng-bind-html="post.markDown|marked"></div>
+			</div>
+			<div class='panel-footer'>
+				<ul class='list-inline'>
+					<li>tags:</li>
+					<li ng-repeat='tag in post.tags.words()'>
+						<a ng-href='"#!feed/tag/"+tag.toLowerCase()'>{{tag}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
