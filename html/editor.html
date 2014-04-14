@@ -46,7 +46,7 @@
 				<ul class='list-inline'>
 					<li>tags:</li>
 					<li ng-repeat='tag in post.tags.words()'>
-						<a ng-href='"#!feed/tag/"+tag.toLowerCase()'>{{tag}}</a>
+						<a class='badge' ng-href='#!feed/tag/{{tag.toLowerCase()}}'>{{tag}}</a>
 					</li>
 				</ul>
 			</div>
