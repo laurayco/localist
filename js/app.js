@@ -1,5 +1,16 @@
 
-module = angular.module('Localist',['ngSanitize']);
+module = angular.module('Localist',['ngSanitize','ngRoute']);
+
+module.config(function($locationProvider,$routeProvider){
+	$routeProvider.when('/edit',{
+		templateUrl:"/html/editor.html"
+	});
+	$routeProvider.when('/search',{
+		templateUrl:"/html/search.html"
+	})
+	$routeProvider.otherwise({redirectTo:'/edit'});
+	$locationProvider.hashPrefix='#!';
+});
 
 module.filter("marked",(function(){
 	return function(data){
@@ -15,10 +26,7 @@ module.factory("Storage",(function($q){
 				var promise = $q.defer();
 				lawn.exists("currentPost",(function(exists){
 					if(exists){
-						console.log(exists);
-						lawn.get("currentPost",(function(post){
-							promise.resolve(post);
-						}));
+						lawn.get("currentPost",promise.resolve);
 					} else promise.resolve(null);
 				}));
 				return promise.promise;
