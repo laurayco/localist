@@ -2,14 +2,14 @@
 module = angular.module('Localist',['ngSanitize','ngRoute']);
 
 module.config(function($locationProvider,$routeProvider){
+	$locationProvider.hashPrefix='#!';
 	$routeProvider.when('/edit',{
 		templateUrl:"/html/editor.html"
 	});
-	$routeProvider.when('/search',{
+	$routeProvider.when('/search/:scope*',{
 		templateUrl:"/html/search.html"
 	})
-	$routeProvider.otherwise({redirectTo:'/edit'});
-	$locationProvider.hashPrefix='#!';
+	$routeProvider.otherwise({redirectTo:'/search/primary/dash'});
 });
 
 module.filter("marked",(function(){
@@ -66,6 +66,15 @@ module.factory("Storage",(function($q){
 				lawn.remove(postData.key,promise.resolve);
 				return promise.promise;
 			});
+			that.searchPost = (function(queryString){
+				var promise = $q.defer();
+				lawn.batch([{type:'post'}],(function(){
+					this.each(function(record,index){
+					});
+					promise.resolve([]);
+				}));
+				return promise.promise;
+			});
 			return that;
 		}),
 		prepare:(function(){
@@ -83,7 +92,7 @@ module.factory("Storage",(function($q){
 
 module.controller('Editor',(function($scope,Storage){
 	$scope.readyState = 0;
-	$scope.post = {markDown:"",name:null,tags:""};
+	$scope.post = {markDown:"",name:null,tags:"",type:'post'};
 	$scope.deletePost = (function(){
 		$scope.readyState = 1;
 		Storage.prepare().then(function(mechanism){
@@ -103,7 +112,7 @@ module.controller('Editor',(function($scope,Storage){
 		Storage.prepare().then(function(mechanism){
 			mechanism.loadCurrentPost().then(function(currentPost){
 				if(currentPost===null||currentPost.postID===null) {
-					$scope.post = {markDown:"",name:null,tags:""};
+					$scope.post = {markDown:"",name:null,tags:"",type:'post'};
 					$scope.readyState = 2;
 				} else mechanism.loadPost(currentPost.postID).then((function (post) {
 					$scope.post = post;
@@ -113,4 +122,15 @@ module.controller('Editor',(function($scope,Storage){
 		});
 	});
 	$scope.reload();
+}));
+
+module.controller("SearchEngine",(function($scope,$routeParams,Storage){
+	$scope.readyState = 0;
+	$scope.posts = [];
+	Storage.prepare().then(function(mechanism){
+		mechanism.searchPosts($routeParams.scope||"").then(function(results){
+			$scope.posts = results;
+			$scope.readyState = 1;
+		});
+	});
 }));
